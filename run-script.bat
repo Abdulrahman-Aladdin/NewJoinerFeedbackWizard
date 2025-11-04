@@ -1,11 +1,12 @@
 @echo off
+cd /d "%~dp0"
 setlocal
 
 REM === CONFIGURATION ===
 set WAIT_INTERVAL=2
 
 echo Starting .NET app...
-start "DotNetApp" cmd /c "dotnet run --project "D:\BootcampMaterial\NewJoinerFeedbackWizard\src\NewJoinerFeedbackWizard.HttpApi.Host""
+start "DotNetApp" cmd /c "dotnet run --project "src\NewJoinerFeedbackWizard.HttpApi.Host""
 
 echo Waiting for the app to start on port 44334...
 
@@ -23,7 +24,7 @@ goto WAIT_LOOP
 
 :AFTER_START
 echo Running the Blazor Project
-start "DotNetBlazorApp" cmd /c "dotnet run --project "D:\BootcampMaterial\NewJoinerFeedbackWizard\src\NewJoinerFeedbackWizard.Blazor""
+start "DotNetBlazorApp" cmd /c "dotnet run --project "src\NewJoinerFeedbackWizard.Blazor""
 
 echo Waiting for the app to start on port 44341...
 
