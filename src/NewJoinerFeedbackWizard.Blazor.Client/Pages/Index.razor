@@ -14,7 +14,23 @@
 }
 else
 {
-	<h1> Welcome to the New Joiner Feedback Wizard!</h1>
-	<h2>Hello, @CurrentUser.Name!</h2>
-	<p>Your Roles: @string.Join(", ", CurrentUser.Roles)</p>
+	if (CurrentUser.Roles.Length == 0)
+	{
+		<h1>Please Login</h1>
+	}
+	else
+	{
+		if (CurrentUser.Roles.Contains("Admin"))
+		{
+			<h1>Admin Dashboard</h1>
+		}
+		else if (CurrentUser.Roles.Contains("Manager"))
+		{
+			<h1>Manager Dashboard</h1>
+		}
+		else if (CurrentUser.Roles.Contains("Employee"))
+		{
+			<h1>Employee Dashboard</h1>
+		}
+	}
 }
