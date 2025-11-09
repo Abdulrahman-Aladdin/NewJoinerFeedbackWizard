@@ -1,0 +1,36 @@
+﻿@inherits LayoutComponentBase
+
+<div class="app-layout d-flex" style="min-height:100vh;">
+    <aside class="app-sidebar bg-white border-end" style="width:260px;">
+        <!-- Render your navbar partial -->
+        <_NavMenuSurveys />
+    </aside>
+
+    <div class="app-main flex-grow-1">
+        <header class="bg-white border-bottom p-3">
+            <div class="container-fluid">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <img src="images/logo/ejada/ejada-thumbnail.png" alt="logo" style="height:32px; margin-right:12px;" />
+                        <strong>New Joiner Feedback Wizard</strong>
+                    </div>
+                    <!-- Optionally add a logout/profile area here -->
+                </div>
+            </div>
+        </header>
+
+        <main class="p-4">
+            @Body
+        </main>
+    </div>
+</div>
+
+<style>
+    .app-sidebar {
+        box-shadow: 0 0 12px rgba(0,0,0,0.03);
+    }
+
+    .app-main header {
+        background: #fff;
+    }
+</style>

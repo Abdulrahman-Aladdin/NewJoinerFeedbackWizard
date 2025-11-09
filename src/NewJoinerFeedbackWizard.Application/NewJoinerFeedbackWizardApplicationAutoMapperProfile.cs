@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using NewJoinerFeedbackWizard.Dtos.Survey;
+using NewJoinerFeedbackWizard.SurveyModel;
 
 namespace NewJoinerFeedbackWizard;
 
@@ -6,8 +8,7 @@ public class NewJoinerFeedbackWizardApplicationAutoMapperProfile : Profile
 {
     public NewJoinerFeedbackWizardApplicationAutoMapperProfile()
     {
-        /* You can configure your AutoMapper mapping configuration here.
-         * Alternatively, you can split your mapping configurations
-         * into multiple profile classes for a better organization. */
+        CreateMap<Survey, SurveyDto>().ReverseMap();
+        CreateMap<CreateSurveyDto, Survey>();
     }
 }

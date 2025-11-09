@@ -1,64 +1,95 @@
 @page "/"
 @using Volo.Abp.MultiTenancy
+@using System.Linq
 @inherits NewJoinerFeedbackWizardComponentBase
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+@using NewJoinerFeedbackWizard.Blazor.Client.Pages
 
-<div class="row mb-3">
-    <div class="col-xl-6 col-12 d-flex">
-        <div class="card h-lg-100 w-100 overflow-hidden">
-            <div class="card-body">
-                <div class="starting-content">
-                    <h3>Getting Started</h3>
-                    <p class="lead text-muted mb-2">Learn how to create and run
-                        a new web application using the application startup template.</p>
-                    <a href="https://docs.abp.io/en/commercial/latest/getting-started" class="btn btn-brand mb-4" target="_blank">Getting Started</a>
+@if (IsLoading)
+{
+	<div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+		<div class="spinner-border text-primary" role="status">
+			<span class="visually-hidden">Loading...</span>
+		</div>
+	</div>
+}
+else
+{
+    <AuthorizeView>
+        <Authorized>
+            @if (CurrentUser != null)
+            {
+                <div class="container mt-4">
+                    <div class="row g-4">
+                        @* Employee / Lead actions *@
+                        @if (CurrentUser.Roles.Contains("Employee") || CurrentUser.Roles.Contains("Lead"))
+                        {
+                            <div class="col-md-6">
+                                <div class="card h-100 border-0 shadow-sm hover-card" style="cursor: pointer;" @onclick='() => NavigationManager.NavigateTo("/surveys/new")'>
+                                    <div class="card-body text-center p-4">
+                                        <div class="mb-3" style="width:56px; height:56px; border-radius:50%; background:#2563eb; display:flex; align-items:center; justify-content:center; margin:0 auto;">
+                                            <i class="fas fa-plus" style="font-size:1.25rem; color:white"></i>
+                                        </div>
+                                        <h4 class="mb-2">Create New Survey</h4>
+                                        <p class="text-muted mb-0">Submit your feedback about onboarding</p>
+                                    </div>
+                                </div>
+                            </div>
 
-                    <h4>Web Application Development Tutorial</h4>
-                    <p class="text-muted mb-2">Learn how to build an ABP based web application named Acme.BookStore.</p>
-                    <a href="https://docs.abp.io/en/commercial/latest/tutorials/book-store/part-1?UI=MVC&DB=EF" class="btn btn-primary soft mb-4" target="_blank">Explore Tutorial</a>
+                            <div class="col-md-6">
+                                <div class="card h-100 border-0 shadow-sm hover-card" style="cursor: pointer;" @onclick='() => NavigationManager.NavigateTo("/surveys/my-surveys")'>
+                                    <div class="card-body text-center p-4">
+                                        <div class="mb-3" style="width:56px; height:56px; border-radius:50%; background:#16a34a; display:flex; align-items:center; justify-content:center; margin:0 auto;">
+                                            <i class="fas fa-clipboard-list" style="font-size:1.25rem; color:white"></i>
+                                        </div>
+                                        <h4 class="mb-2">My Surveys</h4>
+                                        <p class="text-muted mb-0">View and manage your submitted feedback</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
 
-                    <h4>Customize Lepton Theme</h4>
-                    <p class="text-muted mb-2">Learn how to customize LeptonX Theme as you wish.</p>
-                    <a href="https://docs.abp.io/en/commercial/latest/themes/lepton/customizing-lepton-theme" class="btn btn-primary soft mb-5 mb-xl-0" target="_blank">Customize Lepton</a>
+                        @* Manager / Admin actions *@
+                        @if (CurrentUser.Roles.Contains("Manager") || CurrentUser.Roles.Contains("Admin"))
+                        {
+                            <div class="col-12">
+                                <div class="card border-0 shadow-sm hover-card" style="cursor: pointer;" @onclick='() => NavigationManager.NavigateTo("/surveys/manager-dashboard")'>
+                                    <div class="card-body text-center p-4">
+                                        <div class="mb-3" style="width:56px; height:56px; border-radius:50%; background:#9333ea; display:flex; align-items:center; justify-content:center; margin:0 auto;">
+                                            <i class="fas fa-chart-line" style="font-size:1.25rem; color:white"></i>
+                                        </div>
+                                        <h4 class="mb-2">Manager Dashboard</h4>
+                                        <p class="text-muted mb-0">Review team surveys and satisfaction metrics</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
                 </div>
-                <img class="card-bg-image" src="/imagesgetting-started/bg-01.png">
+            }
+            else
+            {
+                <div class="container mt-5 text-center">
+                    <div class="alert alert-warning">Unable to load user details.</div>
+                </div>
+            }
+        </Authorized>
+
+        <NotAuthorized>
+            <div class="container mt-5">
+                <div class="card border-0 shadow-sm p-4 text-center">
+                    <i class="fas fa-sign-in-alt mb-3" style="font-size:2.5rem; color:#2563eb;"></i>
+                    <h3 class="mb-2">Welcome</h3>
+                    <p class="text-muted mb-3">Please log in to access surveys</p>
+                    <a class="btn btn-primary" href="/authentication/login">Login</a>
+                </div>
             </div>
-        </div>
-    </div>
+        </NotAuthorized>
+    </AuthorizeView>
+}
 
-    
-
-    <div class="my-3 text-center">
-        <h3>Let's improve your application!</h3>
-        <p>Here are some links to help you get started:</p>
-    </div>
-
-    <div class="card mt-4 mb-5">
-        <div class="card-body">
-            <div class="row text-center justify-content-md-center">
-                <div class="col-lg-4">
-                    <div class="p-4">
-                        <h5 class="mb-3"><i class="fas fa-book text-secondary d-block my-3 fa-2x"></i> Learn the ABP Framework</h5>
-                        <p>Explore the comprehensive documentation to learn how to build a modern web application.</p>
-                        <a href="https://abp.io/docs/latest?ref=tmpl" target="_blank" class="btn btn-link px-1">See Documents <i class="fas fa-chevron-right"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-4 border-start">
-                    <div class="p-4">
-                        <h5 class="mb-3"><i class="fas fa-cubes text-secondary d-block my-3 fa-2x"></i> Samples</h5>
-                        <p>See the example projects built with the ABP Framework.</p>
-                        <a href="https://abp.io/docs/latest/samples?ref=tmpl" target="_blank" class="btn btn-link px-1">All samples <i class="fas fa-chevron-right"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-4 border-start">
-                    <div class="p-4">
-                        <h5 class="mb-3"><i class="fas fa-users text-secondary d-block my-3 fa-2x"></i> ABP Community</h5>
-                        <p>Get involved with a vibrant community and become a contributor.</p>
-                        <a href="https://abp.io/community/" target="_blank" class="btn btn-link px-1">Community <i class="fas fa-chevron-right"></i></a>
-                        <a href="https://abp.io/docs/latest/contribution?ref=tmpl" target="_blank" class="btn btn-link px-1">Contribute <i class="fas fa-chevron-right"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<style>
+    .hover-card { transition: transform .2s ease, box-shadow .2s ease; }
+    .hover-card:hover { transform: translateY(-6px); box-shadow: 0 10px 20px rgba(0,0,0,.12) !important; }
+</style>

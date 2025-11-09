@@ -1,0 +1,295 @@
+﻿@page "/surveys/manager-dashboard"
+@using NewJoinerFeedbackWizard.Dtos.Survey
+@using NewJoinerFeedbackWizard.Dtos.User
+@using NewJoinerFeedbackWizard.Interfaces
+@using NewJoinerFeedbackWizard.Permissions
+@using Volo.Abp.AspNetCore.Components.Messages
+@inject ISurveyAppService SurveyAppService
+@inject IUserAppService UserAppService
+@inject IUiMessageService MessageService
+@attribute [Authorize(SurveyPermissions.ViewAll)]
+
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 p-4">
+    <div class="container-fluid" style="max-width: 1400px;">
+        <!-- Header -->
+        <div class="mb-4">
+            <div class="d-flex align-items-center mb-4">
+                <div style="width: 48px; height: 48px; background-color: #2563eb; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; margin-right: 1rem;">
+                    <i class="fas fa-users" style="color: white; font-size: 1.5rem;"></i>
+                </div>
+                <div>
+                    <h1 style="font-size: 1.875rem; font-weight: bold; color: #1e3a8a; margin: 0;">Manager Dashboard</h1>
+                    <p style="color: #2563eb; margin: 0;">Review team feedback and monitor satisfaction</p>
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #2563eb;">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <div>
+                                <p style="color: #2563eb; font-weight: 600; font-size: 0.875rem; margin-bottom: 0.25rem;">Total Surveys</p>
+                                <p style="font-size: 1.5rem; font-weight: bold; color: #1e3a8a; margin: 0;">@TotalCount</p>
+                            </div>
+                            <i class="fas fa-users" style="font-size: 2rem; color: #93c5fd;"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #16a34a;">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <div>
+                                <p style="color: #15803d; font-weight: 600; font-size: 0.875rem; margin-bottom: 0.25rem;">This Month</p>
+                                <p style="font-size: 1.5rem; font-weight: bold; color: #14532d; margin: 0;">@ThisMonthCount</p>
+                            </div>
+                            <i class="fas fa-calendar" style="font-size: 2rem; color: #86efac;"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #9333ea;">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <div>
+                                <p style="color: #7e22ce; font-weight: 600; font-size: 0.875rem; margin-bottom: 0.25rem;">Avg Satisfaction</p>
+                                <p style="font-size: 1.5rem; font-weight: bold; color: #581c87; margin: 0;">@AvgSatisfaction%</p>
+                            </div>
+                            <i class="fas fa-chart-line" style="font-size: 2rem; color: #d8b4fe;"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #f97316;">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <div>
+                                <p style="color: #ea580c; font-weight: 600; font-size: 0.875rem; margin-bottom: 0.25rem;">Team Members</p>
+                                <p style="font-size: 1.5rem; font-weight: bold; color: #7c2d12; margin: 0;">@UniqueEmployees</p>
+                            </div>
+                            <i class="fas fa-user-friends" style="font-size: 2rem; color: #fdba74;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search -->
+        <div class="card mb-4 border-0 shadow-sm">
+            <div class="card-body">
+                <div class="input-group">
+                    <span class="input-group-text bg-white" style="border: 2px solid #bfdbfe; border-right: none;">
+                        <i class="fas fa-search text-primary"></i>
+                    </span>
+                    <input type="text" class="form-control"
+                           @bind="SearchTerm"
+                           @bind:event="oninput"
+                           @onkeyup="OnSearchChanged"
+                           placeholder="Search by employee or lead name..."
+                           style="border: 2px solid #bfdbfe; border-left: none;" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Surveys List -->
+        @if (IsLoading)
+        {
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-3 text-primary">Loading surveys...</p>
+            </div>
+        }
+        else if (FilteredSurveys == null || !FilteredSurveys.Any())
+        {
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-users" style="font-size: 4rem; color: #bfdbfe; margin-bottom: 1rem;"></i>
+                    <h3 style="font-size: 1.25rem; font-weight: bold; color: #1e3a8a; margin-bottom: 0.5rem;">No Surveys Found</h3>
+                    <p style="color: #2563eb;">No team surveys available yet.</p>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="row g-3">
+                @foreach (var survey in FilteredSurveys)
+                {
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm hover-shadow">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex align-items-center gap-2 mb-2">
+                                            <h3 style="font-size: 1.25rem; font-weight: bold; color: #1e3a8a; margin: 0;">@survey.EmployeeName</h3>
+                                            <span class="badge bg-primary">New Joiner</span>
+                                        </div>
+                                        <div class="d-flex flex-wrap gap-3" style="font-size: 0.875rem; color: #2563eb;">
+                                            <span><i class="fas fa-user me-1"></i> Lead: @survey.LeadName</span>
+                                            <span><i class="fas fa-calendar me-1"></i> Joined: @survey.JoiningDate.ToShortDateString()</span>
+                                            <span><i class="fas fa-paper-plane me-1"></i> Submitted: @survey.CreationTime.ToShortDateString()</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-end">
+                                        <div class="d-flex align-items-center gap-2 mb-1">
+                                            <span style="font-size: 0.875rem; color: #2563eb; font-weight: 600;">Satisfaction:</span>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <div style="width: 96px; height: 8px; background-color: #dbeafe; border-radius: 9999px; overflow: hidden;">
+                                                    <div style="height: 100%; background-color: @GetSatisfactionColor(survey.SatisfactionLevel); width: @(survey.SatisfactionLevel)%;"></div>
+                                                </div>
+                                                <span style="font-size: 0.875rem; font-weight: bold; color: #1e3a8a;">@survey.SatisfactionLevel%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @if (ExpandedSurveyId == survey.Id)
+                                {
+                                    <div class="mt-3 pt-3" style="border-top: 1px solid #e5e7eb;">
+                                        <div class="row g-3">
+                                            <div class="col-md-4">
+                                                <div class="p-3" style="background-color: #dcfce7; border-radius: 0.5rem;">
+                                                    <h4 style="font-size: 0.875rem; font-weight: bold; color: #1e3a8a; margin-bottom: 0.5rem;">
+                                                        <i class="fas fa-award me-2"></i>Strengths Observed
+                                                    </h4>
+                                                    <p style="color: #15803d; font-size: 0.875rem; margin: 0;">@survey.StrengthsObserved</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="p-3" style="background-color: #fed7aa; border-radius: 0.5rem;">
+                                                    <h4 style="font-size: 0.875rem; font-weight: bold; color: #1e3a8a; margin-bottom: 0.5rem;">
+                                                        <i class="fas fa-exclamation-circle me-2"></i>Areas for Improvement
+                                                    </h4>
+                                                    <p style="color: #7c2d12; font-size: 0.875rem; margin: 0;">@survey.MissingAreas</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="p-3" style="background-color: #dbeafe; border-radius: 0.5rem;">
+                                                    <h4 style="font-size: 0.875rem; font-weight: bold; color: #1e3a8a; margin-bottom: 0.5rem;">
+                                                        <i class="fas fa-lightbulb me-2"></i>Recommendations
+                                                    </h4>
+                                                    <p style="color: #1e3a8a; font-size: 0.875rem; margin: 0;">@survey.Recommendations</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button class="btn btn-outline-primary w-100 mt-3" @onclick="() => ExpandedSurveyId = null">
+                                            <i class="fas fa-chevron-up me-2"></i>Hide Details
+                                        </button>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-primary w-100 mt-2" @onclick="() => ExpandedSurveyId = survey.Id">
+                                        <i class="fas fa-eye me-2"></i>View Full Feedback
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .hover-shadow {
+        transition: box-shadow 0.3s ease;
+    }
+
+        .hover-shadow:hover {
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+        }
+</style>
+
+@code {
+    private List<SurveyDto> AllSurveys { get; set; } = new();
+    private List<SurveyDto> FilteredSurveys { get; set; } = new();
+    private string SearchTerm { get; set; } = string.Empty;
+    private Guid? ExpandedSurveyId { get; set; }
+    private bool IsLoading { get; set; } = true;
+    private UserDto? CurrentUserInfo { get; set; }
+
+    private int TotalCount => AllSurveys.Count;
+    private int ThisMonthCount => AllSurveys.Count(s => s.CreationTime.Month == DateTime.Now.Month && s.CreationTime.Year == DateTime.Now.Year);
+    private int AvgSatisfaction => AllSurveys.Any() ? (int)AllSurveys.Average(s => s.SatisfactionLevel) : 0;
+    private int UniqueEmployees => AllSurveys.Select(s => s.EmployeeName).Distinct().Count();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCurrentUser();
+        await LoadSurveys();
+    }
+
+    private async Task LoadCurrentUser()
+    {
+        try
+        {
+            CurrentUserInfo = await UserAppService.GetCurrentUserAsync();
+        }
+        catch (Exception ex)
+        {
+            await MessageService.Error($"Error loading user info: {ex.Message}");
+        }
+    }
+
+    private async Task LoadSurveys()
+    {
+        try
+        {
+            IsLoading = true;
+
+            // If user is manager, get their team surveys, otherwise get all
+            if (CurrentUserInfo != null && CurrentUserInfo.Roles.Contains("Manager"))
+            {
+                AllSurveys = await SurveyAppService.GetSurveysByManager(CurrentUserInfo.Name);
+            }
+            else
+            {
+                AllSurveys = await SurveyAppService.GetAllSurveys();
+            }
+
+            ApplyFilters();
+        }
+        catch (Exception ex)
+        {
+            await MessageService.Error($"Error loading surveys: {ex.Message}");
+            AllSurveys = new List<SurveyDto>();
+            FilteredSurveys = new List<SurveyDto>();
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private void OnSearchChanged()
+    {
+        ApplyFilters();
+    }
+
+    private void ApplyFilters()
+    {
+        FilteredSurveys = AllSurveys.Where(s =>
+        {
+            var matchesSearch = string.IsNullOrWhiteSpace(SearchTerm) ||
+                               s.EmployeeName.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) ||
+                               s.LeadName.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase);
+            return matchesSearch;
+        }).ToList();
+    }
+
+    private string GetSatisfactionColor(int level)
+    {
+        if (level >= 80) return "#16a34a"; // Green
+        if (level >= 60) return "#2563eb"; // Blue
+        if (level >= 40) return "#f97316"; // Orange
+        return "#dc2626"; // Red
+    }
+}

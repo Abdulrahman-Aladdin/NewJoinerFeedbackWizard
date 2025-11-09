@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NewJoinerFeedbackWizard.SurveyModel;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
+using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.FeatureManagement.EntityFrameworkCore;
 using Volo.Abp.Identity;
 using Volo.Abp.Identity.EntityFrameworkCore;
@@ -24,7 +26,7 @@ public class NewJoinerFeedbackWizardDbContext :
     ITenantManagementDbContext
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
-
+    public DbSet<Survey> Surveys { get; set; }
     #region Entities from the modules
 
     /* Notice: We only implemented IIdentityDbContext and ITenantManagementDbContext
@@ -75,7 +77,11 @@ public class NewJoinerFeedbackWizardDbContext :
         builder.ConfigureTenantManagement();
 
         /* Configure your own tables/entities inside here */
-
+        builder.Entity<Survey>(b =>
+        {
+            b.ToTable(NewJoinerFeedbackWizardConsts.DbTablePrefix + "Surveys", NewJoinerFeedbackWizardConsts.DbSchema);
+            b.ConfigureByConvention();
+        });
         //builder.Entity<YourEntity>(b =>
         //{
         //    b.ToTable(NewJoinerFeedbackWizardConsts.DbTablePrefix + "YourEntities", NewJoinerFeedbackWizardConsts.DbSchema);

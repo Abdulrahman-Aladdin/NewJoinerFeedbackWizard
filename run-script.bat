@@ -24,7 +24,7 @@ goto WAIT_LOOP
 
 :AFTER_START
 echo Running the Blazor Project
-start "DotNetBlazorApp" cmd /c "dotnet run --project "src\NewJoinerFeedbackWizard.Blazor""
+start "DotNetBlazorApp" cmd /k "dotnet run --project "src\NewJoinerFeedbackWizard.Blazor""
 
 echo Waiting for the app to start on port 44341...
 

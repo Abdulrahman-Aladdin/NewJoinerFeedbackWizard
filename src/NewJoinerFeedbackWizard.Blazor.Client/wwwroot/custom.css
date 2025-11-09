@@ -1,0 +1,35 @@
+﻿:root {
+    --ejada-primary: #2563eb;
+    --ejada-primary-dark: #1e3a8a;
+    --ejada-primary-light: #dbeafe;
+    --ejada-success: #16a34a;
+    --ejada-warning: #f97316;
+    --ejada-danger: #dc2626;
+}
+
+.bg-ejada-primary {
+    background-color: var(--ejada-primary) !important;
+}
+
+.text-ejada-primary {
+    color: var(--ejada-primary) !important;
+}
+
+.btn-primary {
+    background-color: var(--ejada-primary);
+    border-color: var(--ejada-primary);
+}
+
+    .btn-primary:hover {
+        background-color: var(--ejada-primary-dark);
+        border-color: var(--ejada-primary-dark);
+    }
+
+.nav-link.active {
+    background-color: var(--ejada-primary) !important;
+}
+
+/* Smooth transitions */
+.card, .btn {
+    transition: all 0.3s ease;
+}

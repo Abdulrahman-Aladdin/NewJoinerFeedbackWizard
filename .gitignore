@@ -260,6 +260,7 @@ src/NewJoinerFeedbackWizard.HttpApi.Host/Logs/*
 src/NewJoinerFeedbackWizard.DbMigrator/Logs/*
 src/NewJoinerFeedbackWizard.Blazor.Server/Logs/*
 src/NewJoinerFeedbackWizard.Blazor.Server.Tiered/Logs/*
+src/NewJoinerFeedbackWizard.Blazor/Logs/
 
 # Use abp install-libs to restore.
 **/wwwroot/libs/*

@@ -1,0 +1,385 @@
+﻿@page "/surveys/new"
+@using NewJoinerFeedbackWizard.Dtos.Survey
+@using NewJoinerFeedbackWizard.Dtos.User
+@using NewJoinerFeedbackWizard.Interfaces
+@using NewJoinerFeedbackWizard.Permissions
+@using Volo.Abp.AspNetCore.Components.Messages
+@inject ISurveyAppService SurveyAppService
+@inject IUserAppService UserAppService
+@inject IUiMessageService MessageService
+@inject NavigationManager NavigationManager
+@attribute [Authorize(SurveyPermissions.Submit)]
+
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 p-4">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8 pt-8">
+            <div class="inline-flex items-center justify-center" style="width: 64px; height: 64px; background-color: #2563eb; border-radius: 50%; margin-bottom: 1rem;">
+                <i class="fas fa-chart-bar" style="font-size: 32px; color: white;"></i>
+            </div>
+            <h1 style="font-size: 1.875rem; font-weight: bold; color: #1e3a8a; margin-bottom: 0.5rem;">New Joiner Feedback Wizard</h1>
+            <p style="color: #2563eb;">Help us improve your onboarding experience</p>
+        </div>
+
+        <!-- Progress Steps -->
+        <div class="mb-8">
+            <div class="d-flex align-items-center justify-content-center">
+                @for (int step = 1; step <= 3; step++)
+                {
+                    int currentStepLocal = step;
+                    <div class="d-flex flex-column align-items-center">
+                        <div class="@GetStepClass(currentStepLocal)" style="width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; transition: all 0.3s;">
+                            @if (CurrentStep > currentStepLocal)
+                            {
+                                <i class="fas fa-check-circle"></i>
+                            }
+                            else
+                            {
+                                @currentStepLocal
+                            }
+                        </div>
+                        <span class="@GetStepTextClass(currentStepLocal)" style="font-size: 0.75rem; margin-top: 0.5rem; font-weight: 500;">
+                            @GetStepLabel(currentStepLocal)
+                        </span>
+                    </div>
+                    @if (step < 3)
+                    {
+                        <div class="@GetProgressLineClass(currentStepLocal)" style="width: 96px; height: 4px; margin: 0 0.5rem; transition: all 0.3s;"></div>
+                    }
+                }
+            </div>
+        </div>
+
+        <!-- Wizard Card -->
+        <div class="bg-white rounded-3 shadow-lg p-4 mb-4" style="border-radius: 1rem;">
+            @if (CurrentStep == 1)
+            {
+                <!-- Step 1: New Joiner Information -->
+                <div class="mb-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <i class="fas fa-user" style="color: #2563eb; font-size: 1.5rem; margin-right: 0.75rem;"></i>
+                        <h2 style="font-size: 1.5rem; font-weight: bold; color: #1e3a8a; margin: 0;">New Joiner Information</h2>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" style="font-weight: 600; color: #1e3a8a;">Employee Name *</label>
+                        <input type="text" class="form-control form-control-lg"
+                               @bind="Survey.EmployeeName"
+                               placeholder="Enter your full name"
+                               style="border: 2px solid #dbeafe; border-radius: 0.5rem;" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" style="font-weight: 600; color: #1e3a8a;">Joining Date *</label>
+                        <input type="date" class="form-control form-control-lg"
+                               @bind="Survey.JoiningDate"
+                               style="border: 2px solid #dbeafe; border-radius: 0.5rem;" />
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" style="font-weight: 600; color: #1e3a8a;">Lead Name *</label>
+                            @if (Leads != null && Leads.Any())
+                            {
+                                <select class="form-select form-select-lg"
+                                        @bind="Survey.LeadName"
+                                        style="border: 2px solid #dbeafe; border-radius: 0.5rem;">
+                                    <option value="">Select Lead</option>
+                                    @foreach (var lead in Leads)
+                                    {
+                                        <option value="@lead.Name">@lead.Name</option>
+                                    }
+                                </select>
+                            }
+                            else
+                            {
+                                <input type="text" class="form-control form-control-lg"
+                                       @bind="Survey.LeadName"
+                                       placeholder="Your team lead"
+                                       style="border: 2px solid #dbeafe; border-radius: 0.5rem;" />
+                            }
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" style="font-weight: 600; color: #1e3a8a;">Manager Name *</label>
+                            @if (Managers != null && Managers.Any())
+                            {
+                                <select class="form-select form-select-lg"
+                                        @bind="Survey.ManagerName"
+                                        style="border: 2px solid #dbeafe; border-radius: 0.5rem;">
+                                    <option value="">Select Manager</option>
+                                    @foreach (var manager in Managers)
+                                    {
+                                        <option value="@manager.Name">@manager.Name</option>
+                                    }
+                                </select>
+                            }
+                            else
+                            {
+                                <input type="text" class="form-control form-control-lg"
+                                       @bind="Survey.ManagerName"
+                                       placeholder="Your manager"
+                                       style="border: 2px solid #dbeafe; border-radius: 0.5rem;" />
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+            else if (CurrentStep == 2)
+            {
+                <!-- Step 2: Feedback -->
+                <div class="mb-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <i class="fas fa-chart-bar" style="color: #2563eb; font-size: 1.5rem; margin-right: 0.75rem;"></i>
+                        <h2 style="font-size: 1.5rem; font-weight: bold; color: #1e3a8a; margin: 0;">Your Feedback</h2>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label" style="font-weight: 600; color: #1e3a8a;">
+                            Satisfaction Level: @Survey.SatisfactionLevel%
+                        </label>
+                        <input type="range" class="form-range"
+                               min="0" max="100"
+                               @bind="Survey.SatisfactionLevel"
+                               style="height: 12px;" />
+                        <div class="d-flex justify-content-between" style="font-size: 0.75rem; color: #2563eb; margin-top: 0.25rem;">
+                            <span>Not Satisfied</span>
+                            <span>Very Satisfied</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" style="font-weight: 600; color: #1e3a8a;">Recommendations for Improvement *</label>
+                        <textarea class="form-control" rows="4"
+                                  @bind="Survey.Recommendations"
+                                  placeholder="Share your suggestions for improving the company and training program..."
+                                  style="border: 2px solid #dbeafe; border-radius: 0.5rem; resize: none;"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" style="font-weight: 600; color: #1e3a8a;">Strengths Observed *</label>
+                        <textarea class="form-control" rows="3"
+                                  @bind="Survey.StrengthsObserved"
+                                  placeholder="What aspects did you find particularly strong?"
+                                  style="border: 2px solid #dbeafe; border-radius: 0.5rem; resize: none;"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" style="font-weight: 600; color: #1e3a8a;">Missing or Areas Needing Improvement *</label>
+                        <textarea class="form-control" rows="3"
+                                  @bind="Survey.MissingAreas"
+                                  placeholder="What could be improved or was missing?"
+                                  style="border: 2px solid #dbeafe; border-radius: 0.5rem; resize: none;"></textarea>
+                    </div>
+                </div>
+            }
+            else if (CurrentStep == 3)
+            {
+                <!-- Step 3: Review and Submit -->
+                <div class="mb-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <i class="fas fa-paper-plane" style="color: #2563eb; font-size: 1.5rem; margin-right: 0.75rem;"></i>
+                        <h2 style="font-size: 1.5rem; font-weight: bold; color: #1e3a8a; margin: 0;">Review & Submit</h2>
+                    </div>
+
+                    <div class="p-4" style="background-color: #eff6ff; border-radius: 0.75rem;">
+                        <div class="mb-3 pb-3" style="border-bottom: 1px solid #bfdbfe;">
+                            <h3 style="font-size: 1.125rem; font-weight: bold; color: #1e3a8a; margin-bottom: 1rem;">Personal Information</h3>
+                            <div class="row">
+                                <div class="col-6 mb-2">
+                                    <span style="color: #2563eb; font-weight: 600;">Name:</span>
+                                    <p style="color: #1e3a8a; margin: 0;">@Survey.EmployeeName</p>
+                                </div>
+                                <div class="col-6 mb-2">
+                                    <span style="color: #2563eb; font-weight: 600;">Joining Date:</span>
+                                    <p style="color: #1e3a8a; margin: 0;">@Survey.JoiningDate.ToShortDateString()</p>
+                                </div>
+                                <div class="col-6 mb-2">
+                                    <span style="color: #2563eb; font-weight: 600;">Lead:</span>
+                                    <p style="color: #1e3a8a; margin: 0;">@Survey.LeadName</p>
+                                </div>
+                                <div class="col-6 mb-2">
+                                    <span style="color: #2563eb; font-weight: 600;">Manager:</span>
+                                    <p style="color: #1e3a8a; margin: 0;">@Survey.ManagerName</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 pb-3" style="border-bottom: 1px solid #bfdbfe;">
+                            <h3 style="font-size: 1.125rem; font-weight: bold; color: #1e3a8a; margin-bottom: 1rem;">Satisfaction</h3>
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1" style="background-color: #bfdbfe; border-radius: 9999px; height: 16px; overflow: hidden;">
+                                    <div style="background-color: #2563eb; height: 100%; width: @(Survey.SatisfactionLevel)%; transition: width 0.3s;"></div>
+                                </div>
+                                <span style="margin-left: 0.75rem; color: #1e3a8a; font-weight: bold;">@Survey.SatisfactionLevel%</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 style="font-size: 1.125rem; font-weight: bold; color: #1e3a8a; margin-bottom: 1rem;">Feedback Summary</h3>
+                            <div class="mb-3">
+                                <span style="color: #2563eb; font-weight: 600;">Recommendations:</span>
+                                <p style="color: #1e3a8a; margin-top: 0.25rem;">@Survey.Recommendations</p>
+                            </div>
+                            <div class="mb-3">
+                                <span style="color: #2563eb; font-weight: 600;">Strengths:</span>
+                                <p style="color: #1e3a8a; margin-top: 0.25rem;">@Survey.StrengthsObserved</p>
+                            </div>
+                            <div class="mb-3">
+                                <span style="color: #2563eb; font-weight: 600;">Areas for Improvement:</span>
+                                <p style="color: #1e3a8a; margin-top: 0.25rem;">@Survey.MissingAreas</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert" style="background-color: #dbeafe; border-left: 4px solid #2563eb; margin-top: 1rem;">
+                        <p style="color: #1e3a8a; font-size: 0.875rem; margin: 0;">
+                            <strong>Note:</strong> Once submitted, your feedback will be reviewed by your manager and HR team. Thank you for helping us improve!
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="d-flex justify-content-between align-items-center">
+            <button class="btn btn-lg @(CurrentStep == 1 ? "btn-secondary" : "btn-outline-primary")"
+                    @onclick="PreviousStep"
+                    disabled="@(CurrentStep == 1)"
+                    style="border-radius: 0.5rem; padding: 0.75rem 1.5rem; font-weight: 600;">
+                <i class="fas fa-chevron-left me-2"></i> Previous
+            </button>
+
+            @if (CurrentStep < 3)
+            {
+                <button class="btn btn-primary btn-lg"
+                        @onclick="NextStep"
+                        disabled="@(!IsCurrentStepValid())"
+                        style="background-color: #2563eb; border: none; border-radius: 0.5rem; padding: 0.75rem 1.5rem; font-weight: 600;">
+                    Next <i class="fas fa-chevron-right ms-2"></i>
+                </button>
+            }
+            else
+            {
+                <button class="btn btn-lg"
+                        @onclick="SubmitSurvey"
+                        disabled="@IsSubmitting"
+                        style="background-color: #16a34a; color: white; border: none; border-radius: 0.5rem; padding: 0.75rem 2rem; font-weight: 600;">
+                    @if (IsSubmitting)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2"></span>
+                    }
+                    <i class="fas fa-paper-plane me-2"></i> Submit Survey
+                </button>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private CreateSurveyDto Survey { get; set; } = new();
+    private int CurrentStep { get; set; } = 1;
+    private bool IsSubmitting { get; set; }
+    private List<UserDto> Leads { get; set; } = new();
+    private List<UserDto> Managers { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Survey.JoiningDate = DateTime.Now;
+        Survey.SatisfactionLevel = 50;
+
+        // Load leads and managers
+        try
+        {
+            Leads = await UserAppService.GetAllLeads();
+            Managers = await UserAppService.GetAllManagers();
+        }
+        catch
+        {
+            // If not implemented yet, use text inputs instead
+            Leads = new List<UserDto>();
+            Managers = new List<UserDto>();
+        }
+    }
+
+    private void NextStep()
+    {
+        if (IsCurrentStepValid() && CurrentStep < 3)
+        {
+            CurrentStep++;
+        }
+    }
+
+    private void PreviousStep()
+    {
+        if (CurrentStep > 1)
+        {
+            CurrentStep--;
+        }
+    }
+
+    private bool IsCurrentStepValid()
+    {
+        return CurrentStep switch
+        {
+            1 => !string.IsNullOrWhiteSpace(Survey.EmployeeName) &&
+                 !string.IsNullOrWhiteSpace(Survey.LeadName) &&
+                 !string.IsNullOrWhiteSpace(Survey.ManagerName),
+            2 => !string.IsNullOrWhiteSpace(Survey.Recommendations) &&
+                 !string.IsNullOrWhiteSpace(Survey.StrengthsObserved) &&
+                 !string.IsNullOrWhiteSpace(Survey.MissingAreas),
+            _ => true
+        };
+    }
+
+    private async Task SubmitSurvey()
+    {
+        try
+        {
+            IsSubmitting = true;
+            await SurveyAppService.CreateSurvey(Survey);
+
+            await MessageService.Success("Survey submitted successfully!");
+            NavigationManager.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            await MessageService.Error($"Error submitting survey: {ex.Message}");
+        }
+        finally
+        {
+            IsSubmitting = false;
+        }
+    }
+
+    private string GetStepClass(int step)
+    {
+        if (CurrentStep == step)
+            return "bg-primary text-white shadow";
+        else if (CurrentStep > step)
+            return "bg-primary text-white";
+        else
+            return "bg-light text-secondary";
+    }
+
+    private string GetStepTextClass(int step)
+    {
+        return CurrentStep >= step ? "text-primary" : "text-muted";
+    }
+
+    private string GetProgressLineClass(int step)
+    {
+        return CurrentStep > step ? "bg-primary" : "bg-light";
+    }
+
+    private string GetStepLabel(int step)
+    {
+        return step switch
+        {
+            1 => "Information",
+            2 => "Feedback",
+            3 => "Submit",
+            _ => ""
+        };
+    }
+}

@@ -64,5 +64,6 @@ public class NewJoinerFeedbackWizardDomainModule : AbpModule
 #if DEBUG
         context.Services.Replace(ServiceDescriptor.Singleton<IEmailSender, NullEmailSender>());
 #endif
+
     }
 }
