@@ -1,35 +1,157 @@
-﻿:root {
+﻿/* Fix 1: Icon circle size in wizard - More specific selector */
+.text-center > .d-inline-flex.align-items-center.justify-content-center {
+    width: 85px !important;
+    height: 80px !important;
+    min-width: 80px !important;
+    min-height: 80px !important;
+    display: inline-flex !important;
+}
+
+.text-center > .d-inline-flex i.fa-chart-bar,
+.text-center > .d-inline-flex i.fas.fa-chart-bar {
+    font-size: 2.5rem !important;
+    line-height: 1 !important;
+}
+
+/* Fix 2: Ensure sidebar is properly positioned */
+.app-sidebar {
+    position: fixed !important;
+    height: 100vh !important;
+    width: 260px !important;
+    overflow-y: auto !important;
+    z-index: 1000 !important;
+    left: 0 !important;
+    top: 0 !important;
+}
+
+/* Fix 3: Main content accounting for fixed sidebar */
+.app-main {
+    margin-left: 260px !important;
+    width: calc(100% - 260px) !important;
+}
+
+/* Fix 4: Login page specific fixes */
+body.abp-application-layout {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Fix 5: Ensure login forms are properly centered */
+.abp-login-page,
+.account-layout {
+    min-height: 100vh !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 20px !important;
+}
+
+    /* Fix 6: Login card styling */
+    .account-layout .card,
+    .abp-login-page .card {
+        max-width: 450px !important;
+        width: 100% !important;
+        margin: auto !important;
+    }
+
+/* Fix 7: Prevent layout shift */
+.app-layout {
+    position: relative;
+    min-height: 100vh;
+}
+
+/* Fix 8: Navigation link styling */
+.nav-link {
+    border-radius: 0.375rem;
+    margin: 2px 8px;
+    padding: 0.5rem 0.75rem;
+    transition: all 0.2s ease;
+    color: #64748b;
+    text-decoration: none;
+}
+
+    .nav-link:hover {
+        background-color: #f1f5f9;
+        color: #2563eb;
+    }
+
+    .nav-link.active {
+        background-color: #2563eb !important;
+        color: white !important;
+    }
+
+        .nav-link.active i {
+            color: white !important;
+        }
+
+/* Fix 9: Wizard progress steps */
+.d-flex.align-items-center.justify-content-center > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Fix 10: Ensure responsive behavior */
+@media (max-width: 768px) {
+    .app-sidebar {
+        width: 0 !important;
+        overflow: hidden;
+    }
+
+    .app-main {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+}
+
+/* Fix 11: Custom Ejada blue theme colors */
+:root {
     --ejada-primary: #2563eb;
     --ejada-primary-dark: #1e3a8a;
     --ejada-primary-light: #dbeafe;
     --ejada-success: #16a34a;
     --ejada-warning: #f97316;
-    --ejada-danger: #dc2626;
-}
-
-.bg-ejada-primary {
-    background-color: var(--ejada-primary) !important;
-}
-
-.text-ejada-primary {
-    color: var(--ejada-primary) !important;
 }
 
 .btn-primary {
-    background-color: var(--ejada-primary);
-    border-color: var(--ejada-primary);
+    background-color: var(--ejada-primary) !important;
+    border-color: var(--ejada-primary) !important;
 }
 
     .btn-primary:hover {
-        background-color: var(--ejada-primary-dark);
-        border-color: var(--ejada-primary-dark);
+        background-color: var(--ejada-primary-dark) !important;
+        border-color: var(--ejada-primary-dark) !important;
     }
 
-.nav-link.active {
+.text-primary {
+    color: var(--ejada-primary) !important;
+}
+
+.bg-primary {
     background-color: var(--ejada-primary) !important;
 }
 
-/* Smooth transitions */
-.card, .btn {
+/* Fix 12: Card hover effects */
+.hover-shadow {
     transition: all 0.3s ease;
+}
+
+    .hover-shadow:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+    }
+
+/* Fix 13: Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+.app-main main {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Fix 14: Loading spinner */
+.spinner-border {
+    color: var(--ejada-primary) !important;
 }

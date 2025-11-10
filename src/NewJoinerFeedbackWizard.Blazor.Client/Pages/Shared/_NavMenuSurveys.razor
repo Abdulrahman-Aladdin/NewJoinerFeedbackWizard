@@ -1,46 +1,64 @@
 ﻿@using NewJoinerFeedbackWizard.Permissions
 
-<div class="nav-item px-3 mt-3">
-    <h6 class="text-uppercase text-muted small fw-bold">
+<div class="px-3 py-2">
+    <h6 class="text-uppercase text-muted small fw-bold mb-3">
         <i class="fas fa-chart-bar me-2"></i>Surveys
     </h6>
 </div>
 
-<AuthorizeView Policy="@SurveyPermissions.Submit">
-    <Authorized>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="surveys/new" Match="NavLinkMatch.All">
-                <span class="d-flex align-items-center">
+<ul class="nav flex-column">
+    <AuthorizeView Policy="@SurveyPermissions.Submit">
+        <Authorized>
+            <li class="nav-item">
+                <NavLink class="nav-link d-flex align-items-center px-3 py-2" href="surveys/new" Match="NavLinkMatch.All">
                     <i class="fas fa-plus-circle me-2 text-primary"></i>
                     <span>New Survey</span>
-                </span>
-            </NavLink>
-        </li>
-    </Authorized>
-</AuthorizeView>
+                </NavLink>
+            </li>
+        </Authorized>
+    </AuthorizeView>
 
-<AuthorizeView Policy="@SurveyPermissions.View">
-    <Authorized>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="surveys/my-surveys" Match="NavLinkMatch.All">
-                <span class="d-flex align-items-center">
+    <AuthorizeView Policy="@SurveyPermissions.View">
+        <Authorized>
+            <li class="nav-item">
+                <NavLink class="nav-link d-flex align-items-center px-3 py-2" href="surveys/my-surveys" Match="NavLinkMatch.All">
                     <i class="fas fa-clipboard-list me-2 text-success"></i>
                     <span>My Surveys</span>
-                </span>
-            </NavLink>
-        </li>
-    </Authorized>
-</AuthorizeView>
+                </NavLink>
+            </li>
+        </Authorized>
+    </AuthorizeView>
 
-<AuthorizeView Policy="@SurveyPermissions.ViewAll">
-    <Authorized>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="surveys/manager-dashboard" Match="NavLinkMatch.All">
-                <span class="d-flex align-items-center">
+    <AuthorizeView Policy="@SurveyPermissions.ViewAll">
+        <Authorized>
+            <li class="nav-item">
+                <NavLink class="nav-link d-flex align-items-center px-3 py-2" href="surveys/manager-dashboard" Match="NavLinkMatch.All">
                     <i class="fas fa-chart-line me-2 text-info"></i>
                     <span>Team Dashboard</span>
-                </span>
-            </NavLink>
-        </li>
-    </Authorized>
-</AuthorizeView>
+                </NavLink>
+            </li>
+        </Authorized>
+    </AuthorizeView>
+</ul>
+
+<style>
+    .nav-link {
+        color: #64748b;
+        border-radius: 0.375rem;
+        transition: all 0.2s;
+    }
+
+        .nav-link:hover {
+            background-color: #f1f5f9;
+            color: #2563eb;
+        }
+
+        .nav-link.active {
+            background-color: #2563eb;
+            color: white !important;
+        }
+
+            .nav-link.active i {
+                color: white !important;
+            }
+</style>
