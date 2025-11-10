@@ -7,4 +7,9 @@ public class NewJoinerFeedbackWizardMenus
 
     //Add your menu items here...
 
+    public const string Surveys = Prefix + ".Surveys";
+    public const string NewSurvey = Surveys + ".New";
+    public const string MySurveys = Surveys + ".My";
+    public const string ManagerDashboard = Surveys + ".ManagerDashboard";
+
 }

@@ -6,7 +6,7 @@ REM === CONFIGURATION ===
 set WAIT_INTERVAL=2
 
 echo Starting .NET app...
-start "DotNetApp" cmd /c "dotnet run --project "src\NewJoinerFeedbackWizard.HttpApi.Host""
+start "DotNetApp" cmd /k "dotnet run --project "src\NewJoinerFeedbackWizard.HttpApi.Host""
 
 echo Waiting for the app to start on port 44334...
 
