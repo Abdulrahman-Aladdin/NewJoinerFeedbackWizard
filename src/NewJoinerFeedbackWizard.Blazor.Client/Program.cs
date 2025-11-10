@@ -1,5 +1,5 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using System.Threading.Tasks;
 
 namespace NewJoinerFeedbackWizard.Blazor.Client;
 

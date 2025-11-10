@@ -31,10 +31,18 @@ namespace NewJoinerFeedbackWizard.Repositories
         public async Task<List<Survey>> GetBySubmittedByAsync(string submittedBy)
         {
             var dbSet = await GetDbSetAsync();
-            return await dbSet
-                .Where(s => s.CreatorId != null) // Filter by creator
-                .OrderByDescending(s => s.CreationTime)
-                .ToListAsync();
+
+            // Expect submittedBy to be the user's GUID string (CurrentUser.Id.ToString()).
+            if (Guid.TryParse(submittedBy, out var userId))
+            {
+                return await dbSet
+                    .Where(s => s.CreatorId == userId)
+                    .OrderByDescending(s => s.CreationTime)
+                    .ToListAsync();
+            }
+
+            // If not a GUID, return empty list (avoid returning all records).
+            return new List<Survey>();
         }
     }
 }
