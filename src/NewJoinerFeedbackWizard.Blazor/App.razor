@@ -32,6 +32,14 @@
     </div>
 
     <script src="global.js"></script>
-
+    <script>
+        function downloadFileFromBytes(fileName, byteArray) {
+            var blob = new Blob([new Uint8Array(byteArray)], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = fileName;
+            link.click();
+        }
+    </script>
 </body>
 </html>
