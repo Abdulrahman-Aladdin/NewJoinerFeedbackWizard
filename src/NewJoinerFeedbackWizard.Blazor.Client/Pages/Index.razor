@@ -51,7 +51,7 @@ else
                         }
 
                         @* Manager / Admin actions *@
-                        @if (CurrentUser.Roles.Contains("Manager") || CurrentUser.Roles.Contains("Admin"))
+                        @if (CurrentUser.Roles.Contains("Manager") || CurrentUser.Roles.Contains("admin"))
                         {
                             <div class="col-12">
                                 <div class="card border-0 shadow-sm hover-card" style="cursor: pointer;" @onclick='() => NavigationManager.NavigateTo("/surveys/manager-dashboard")'>

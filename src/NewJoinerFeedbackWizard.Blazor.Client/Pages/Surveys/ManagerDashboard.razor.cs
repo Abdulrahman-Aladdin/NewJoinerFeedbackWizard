@@ -26,6 +26,10 @@ namespace NewJoinerFeedbackWizard.Blazor.Client.Pages.Surveys
         private int UniqueEmployees => AllSurveys.Select(s => s.EmployeeName).Distinct().Count();
 
         private bool IsDownloadInProgress = false;
+        private bool HasDeletePermission = false;
+
+        private bool IsDeleteModalVisible = false;
+        private SurveyDto? SurveyToDelete;
 
         protected override async Task OnInitializedAsync()
         {
@@ -38,6 +42,10 @@ namespace NewJoinerFeedbackWizard.Blazor.Client.Pages.Surveys
             try
             {
                 CurrentUserInfo = await UserAppService.GetCurrentUserAsync();
+                if (CurrentUserInfo.Roles.Contains("admin"))
+                {
+                    HasDeletePermission = true;
+                }
             }
             catch (Exception ex)
             {
@@ -91,6 +99,12 @@ namespace NewJoinerFeedbackWizard.Blazor.Client.Pages.Surveys
             }).ToList();
         }
 
+        private void ClearFilters()
+        {
+            SearchTerm = string.Empty;
+            FilteredSurveys = AllSurveys;
+        }
+
         private string GetSatisfactionColor(int level)
         {
             if (level >= 80) return "#16a34a"; // Green
@@ -113,6 +127,33 @@ namespace NewJoinerFeedbackWizard.Blazor.Client.Pages.Surveys
                 IsDownloadInProgress = false;
             }
             
+        }
+
+        private async Task ShowDeleteConfirmation(Guid surveyId)
+        {
+            IsDeleteModalVisible = true;
+            SurveyToDelete = AllSurveys.FirstOrDefault(s => s.Id == surveyId);
+            await JS.InvokeVoidAsync("eval", "document.body.classList.add('modal-open')");
+        }
+
+        private async Task CloseDeleteModal()
+        {
+            IsDeleteModalVisible = false;
+            SurveyToDelete = null;
+            await JS.InvokeVoidAsync("eval", "document.body.classList.remove('modal-open')");
+        }
+
+        private async Task ConfirmDelete()
+        {
+            if (SurveyToDelete is not null)
+            {
+                await SurveyAppService.Delete(SurveyToDelete.Id);
+
+                AllSurveys.Remove(SurveyToDelete);
+                ClearFilters();
+            }
+
+            CloseDeleteModal();
         }
     }
 }
