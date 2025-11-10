@@ -1,8 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using NewJoinerFeedbackWizard.Localization;
 using NewJoinerFeedbackWizard.MultiTenancy;
+using NewJoinerFeedbackWizard.Permissions;
+using System;
+using System.Threading.Tasks;
 using Volo.Abp.Account.Localization;
 using Volo.Abp.Authorization.Permissions;
 using Volo.Abp.Identity.Blazor;
@@ -33,7 +34,7 @@ public class NewJoinerFeedbackWizardMenuContributor : IMenuContributor
         }
     }
 
-    private Task ConfigureMainMenuAsync(MenuConfigurationContext context)
+    private  Task ConfigureMainMenuAsync(MenuConfigurationContext context)
     {
         var l = context.GetLocalizer<NewJoinerFeedbackWizardResource>();
 
@@ -46,6 +47,39 @@ public class NewJoinerFeedbackWizardMenuContributor : IMenuContributor
                 icon: "fas fa-home"
             )
         );
+
+        var surveyMenu = new ApplicationMenuItem(
+            NewJoinerFeedbackWizardMenus.Surveys,
+            l["Menu:Surveys"] ?? "Surveys",
+            icon: "fas fa-chart-bar"
+        );
+
+        surveyMenu.AddItem(
+            new ApplicationMenuItem(
+                NewJoinerFeedbackWizardMenus.NewSurvey,
+                l["Menu:NewSurvey"] ?? "New Survey",
+                "/surveys/new",
+                icon: "fas fa-plus-circle"
+            ).RequirePermissions(SurveyPermissions.Submit)
+        );
+        surveyMenu.AddItem(
+            new ApplicationMenuItem(
+                NewJoinerFeedbackWizardMenus.MySurveys,
+                l["Menu:MySurveys"] ?? "My Surveys",
+                "/surveys/my-surveys",
+                icon: "fas fa-folder-open"
+            ).RequirePermissions(SurveyPermissions.Submit)
+        );
+        surveyMenu.AddItem(
+            new ApplicationMenuItem(
+                NewJoinerFeedbackWizardMenus.MySurveys,
+                l["Menu:ManagerDashboard"] ?? "Manager Dashboard",
+                "/surveys/manager-dashboard",
+                icon: "fas fa-folder-open"
+            ).RequirePermissions(SurveyPermissions.ViewAll)
+        );
+
+        context.Menu.AddItem(surveyMenu);
 
         var administration = context.Menu.GetAdministration();
 

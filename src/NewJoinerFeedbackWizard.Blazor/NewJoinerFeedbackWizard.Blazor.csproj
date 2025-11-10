@@ -20,4 +20,8 @@
     <ProjectReference Include="..\NewJoinerFeedbackWizard.Blazor.Client\NewJoinerFeedbackWizard.Blazor.Client.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Logs\" />
+  </ItemGroup>
+
 </Project>
