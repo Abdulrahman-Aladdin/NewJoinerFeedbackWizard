@@ -72,6 +72,17 @@ public class NewJoinerFeedbackWizardHttpApiHostModule : AbpModule
         ConfigureVirtualFileSystem(context);
         ConfigureCors(context, configuration);
         ConfigureSwaggerServices(context, configuration);
+        context.Services.AddAuthentication()
+            .AddGoogle("Google", options =>
+            {
+                options.ClientId = configuration["Authentication:Google:ClientId"];
+                options.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+            })
+            .AddMicrosoftAccount("Microsoft", options =>
+            {
+                options.ClientId = configuration["Authentication:Microsoft:ClientId"];
+                options.ClientSecret = configuration["Authentication:Microsoft:ClientSecret"];
+            });
     }
 
     private void ConfigureAuthentication(ServiceConfigurationContext context)

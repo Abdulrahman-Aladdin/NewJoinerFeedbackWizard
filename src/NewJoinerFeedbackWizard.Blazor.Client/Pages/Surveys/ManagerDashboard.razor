@@ -12,7 +12,10 @@
 @inject IJSRuntime JS
 @inject IStringLocalizer<NewJoinerFeedbackWizardResource> L
 @attribute [Authorize(SurveyPermissions.ViewAll)]
-
+@{
+    var ejada_blue = "#000f7d";
+    var ejada_green = "#1ee790";
+}
 <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 p-4">
     <div class="container-fluid" style="max-width: 1400px;">
         @if (IsDeleteModalVisible)
@@ -42,22 +45,22 @@
         <!-- Header -->
         <div class="mb-4">
             <div class="d-flex align-items-center mb-4">
-                <div style="width: 48px; height: 48px; background-color: #2563eb; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; margin-right: 1rem;">
+                <div style="width: 48px; height: 48px; background-color: @ejada_blue; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; margin-right: 1rem;">
                     <i class="fas fa-users" style="color: white; font-size: 1.5rem;"></i>
                 </div>
                 <div>
                     <h1 style="font-size: 1.875rem; font-weight: bold; color: #1e3a8a; margin: 0;">@L["Menu:ManagerDashboard"]</h1>
-                    <p style="color: #2563eb; margin: 0;">@L["DashboardSubtitle"]</p>
+                    <p style="color: @ejada_blue; margin: 0;">@L["DashboardSubtitle"]</p>
                 </div>
             </div>
 
             <!-- Statistics Cards -->
             <div class="row g-3 mb-4">
                 <div class="col-md-3">
-                    <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #2563eb;">
+                    <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid @ejada_blue;">
                         <div class="card-body d-flex justify-content-between align-items-center">
                             <div>
-                                <p style="color: #2563eb; font-weight: 600; font-size: 0.875rem; margin-bottom: 0.25rem;">@L["TotalSurveys"]</p>
+                                <p style="color: @ejada_blue; font-weight: 600; font-size: 0.875rem; margin-bottom: 0.25rem;">@L["TotalSurveys"]</p>
                                 <p style="font-size: 1.5rem; font-weight: bold; color: #1e3a8a; margin: 0;">@TotalCount</p>
                             </div>
                             <i class="fas fa-users" style="font-size: 2rem; color: #93c5fd;"></i>
@@ -150,7 +153,7 @@
                 <div class="card-body text-center py-5">
                     <i class="fas fa-users" style="font-size: 4rem; color: #bfdbfe; margin-bottom: 1rem;"></i>
                     <h3 style="font-size: 1.25rem; font-weight: bold; color: #1e3a8a; margin-bottom: 0.5rem;">@L["NoSurveysTitle"]</h3>
-                    <p style="color: #2563eb;">@L["NoSurveysDescription"]</p>
+                    <p style="color: @ejada_blue;">@L["NoSurveysDescription"]</p>
                 </div>
             </div>
         }
@@ -165,10 +168,10 @@
                                 <div class="d-flex justify-content-between align-items-start mb-3">
                                     <div class="flex-grow-1">
                                         <div class="d-flex align-items-center gap-2 mb-2">
-                                            <h3 style="font-size: 1.25rem; font-weight: bold; color: #1e3a8a; margin: 0;">@survey.EmployeeName</h3>
+                                            <h3 style="font-size: 1.25rem; font-weight: bold; color: @ejada_blue; margin: 0;">@survey.EmployeeName</h3>
                                             <span class="badge bg-primary">@L["Badge:NewJoiner"]</span>
                                         </div>
-                                        <div class="d-flex flex-wrap gap-3" style="font-size: 0.875rem; color: #2563eb;">
+                                        <div class="d-flex flex-wrap gap-3" style="font-size: 0.875rem; color: @ejada_blue;">
                                             <span><i class="fas fa-user me-1"></i>@L["Label:Lead"] @survey.LeadName</span>
                                             <span><i class="fas fa-calendar me-1"></i>@L["Label:Joined"] @survey.JoiningDate.ToShortDateString()</span>
                                             <span><i class="fas fa-paper-plane me-1"></i>@L["Label:Submitted"] @survey.CreationTime.ToShortDateString()</span>
@@ -177,7 +180,7 @@
 
                                     <div class="text-end">
                                         <div class="d-flex align-items-center gap-2 mb-1">
-                                            <span style="font-size: 0.875rem; color: #2563eb; font-weight: 600;">@L["Label:Satisfaction"]</span>
+                                            <span style="font-size: 0.875rem; color: @ejada_blue; font-weight: 600;">@L["Label:Satisfaction"]</span>
                                             <div class="d-flex align-items-center gap-1">
                                                 <div style="width: 96px; height: 8px; background-color: #dbeafe; border-radius: 9999px; overflow: hidden;">
                                                     <div style="height: 100%; background-color: @GetSatisfactionColor(survey.SatisfactionLevel); width: @(survey.SatisfactionLevel)%;"></div>
