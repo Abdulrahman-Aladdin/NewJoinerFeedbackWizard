@@ -44,19 +44,19 @@ namespace NewJoinerFeedbackWizard.Blazor.Client.Pages.Surveys
 
         private async Task DeleteSurvey(Guid surveyId)
         {
-            var confirmed = await MessageService.Confirm("Are you sure you want to delete this survey?");
+            var confirmed = await MessageService.Confirm(L["Delete:Confirmation"]);
             if (confirmed)
             {
                 try
                 {
                     await SurveyAppService.Delete(surveyId);
-                    await MessageService.Success("Survey deleted successfully!");
+                    await MessageService.Success(L["Delete:SurveyDeletedSuccessfully"]);
                     await LoadMySurveys();
                     ExpandedSurveyId = null;
                 }
                 catch (Exception ex)
                 {
-                    await MessageService.Error($"Error deleting survey: {ex.Message}");
+                    await MessageService.Error(L["Delete:FailedToDeleteSurvey"]);
                 }
             }
         }

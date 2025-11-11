@@ -1,9 +1,119 @@
 {
   "culture": "ar",
   "texts": {
-    "AppName": "NewJoinerFeedbackWizard",
+    "AppName": "معالج ملاحظات المنضمين الجدد",
     "Menu:Home": "الصفحة الرئيسية",
     "Welcome": "مرحباً",
-    "LongWelcomeMessage": "مرحبا بكم في التطبيق. هذا مشروع بدء تشغيل يعتمد على إطار عمل ABP. لمزيد من المعلومات ، يرجى زيارة abp.io."
+    "LongWelcomeMessage": "مرحبا بكم في التطبيق. هذا مشروع بدء تشغيل يعتمد على إطار عمل ABP. لمزيد من المعلومات ، يرجى زيارة abp.io.",
+    "Menu:Surveys": "الاستطلاعات",
+    "Menu:NewSurvey": "استطلاع جديد",
+    "Menu:MySurveys": "استطلاعاتي",
+    "Menu:ManagerDashboard": "لوحة قيادة الفريق",
+    "ManagerDashboard": "لوحة قيادة المدير",
+    "DashboardSubtitle": "مراجعة ملاحظات الفريق ومراقبة مستوي رضاهم",
+    "TotalSurveys": "إجمالي الاستطلاعات",
+    "StatsThisMonth": "هذا الشهر",
+    "StatsAvgSatisfaction": "متوسط مستوي الرضا",
+    "StatsTeamMembers": "أعضاء الفريق",
+    "SearchPlaceholder": "ابحث باسم الموظف أو المشرف...",
+    "ButtonExportExcel": "تصدير إلى Excel",
+    "StatusDownloading": "جاري التحميل...",
+    "StatusLoading": "جاري التحميل...",
+    "StatusLoadingSurveys": "جاري تحميل الاستطلاعات...",
+    "NoSurveysTitle": "لم يتم العثور على استطلاعات",
+    "NoSurveysDescription": "لا توجد استطلاعات فريق متاحة بعد.",
+    "Badge:NewJoiner": "موظف جديد",
+    "Label:Lead": "المشرف:",
+    "Label:Joined": "تاريخ الانضمام:",
+    "Label:Submitted": "تم الإرسال:",
+    "Label:Satisfaction": "مستوي الرضا :",
+    "Feedback:Strengths": "نقاط القوة المرصودة:",
+    "Feedback:Improvement": "مجالات التحسين",
+    "Feedback:Recommendations": "المقتراحات",
+    "ManagerReviewDashboard": "مراجعة استبيانات ومقاييس رضا الفريق ",
+    "LoginSubTitle": "الرجاء تسجيل الدخول للوصول إلى الاستبيانات",
+    "Login": "تسجيل الدخول",
+
+
+    "CreateNewSurvey": "إنشاء استبيان جديد",
+    "MySurveys": "استطلاعاتي",
+    "SubmitOnboardingFeedback": "قدّم ملاحظاتك حول عملية الانضمام",
+    "ViewAndManageSubmittedFeedback": "عرض وإدارة الملاحظات التي قدّمتها",
+
+    "NewSurvey": "استطلاع جديد",
+    "ViewSubmittedFeedbackSurveys": "عرض الاستبيانات المقدَّمة",
+    "AvgSatisfaction": "متوسط مستوي الرضا",
+    "LatestSubmission": "آخر استبيان تم تقديمه",
+    "N_A": "غير متوفر",
+    "Loading": "جاري التحميل...",
+    "LoadingSurveys": "جاري تحميل استطلاعاتك...",
+    "NoSurveysYet": "لا يوجد استبيانات حتى الآن",
+    "NoFeedbackSubmitted": "لم تقم بتقديم أي استبيانات بعد.",
+    "CreateFirstSurvey": "قم بإنشاء أول استبيان لك",
+    "Manager": "المدير:",
+    "YourSatisfaction": "مدى رضاك:",
+    "Strengths": "نِقَاط القوة الملحوظة",
+    "Delete": "حذف",
+    "ViewYourFeedback": "عرض ملاحظاتك",
+    "NewJoinerFeedbackWizard": "معالج ملاحظات المنضمين الجدد",
+    "HelpUsImproveYourOnboardingExperience": "ساعدنا على جعل تجربة الانضمام أفضل",
+    "NewJoinerInformation": "بيانات المنضم الجديد",
+    "EmployeeName": "اسم الموظف *",
+    "JoiningDate": "تاريخ الانضمام *",
+    "LeadName": "اسم المشرف *",
+    "EnterYourFullName": "أدخل اسمك الكامل",
+    "YourTeamLead": "مشرف فريقك",
+    "SelectLead": "اختر المشرف",
+    "ManagerName": "اسم المدير *",
+    "SelectManager": "اختر المدير",
+    "YourManager": "مديرك",
+    "YourFeedback": "ملاحظاتك",
+    "SatisfactionLevel": "مستوى رضاك:",
+    "NotSatisfied": "غير راضٍ",
+    "VerySatisfied": "راضٍ جدًا",
+    "RecommendationsforImprovement": "مقترحات لتطوير الأداء",
+    "ShareYourSuggestions": "شارك اقتراحاتك لتحسين الشركة وبرنامج التدريب...",
+    "StrengthsObserved": "نِقَاط القوة الملحوظة *",
+    "StrongAspects": "ما النقاط التي تراها من أبرز نقاط القوة؟",
+    "AreasNeedingImprovement": "النقاط المفقودة أو المجالات التي تحتاج إلى تحسين *",
+    "WhatCouldBeImprovedOrWasMissing": "ما الذي يمكن تحسينه أو كان مفقودًا؟",
+    "ReviewAndSubmit": "مراجعة وإرسال",
+    "PersonalInformation": "البيانات الشخصية",
+    "Name": "الاسم:",
+    "Label:JoiningDate": "تاريخ الانضمام:",
+    "Label:Manager": "المدير:",
+
+    "Satisfaction": "مستوي رضاك",
+    "FeedbackSummary": "ملخص الملاحظات",
+    "Recommendations": "المقتراحات:",
+    "Improvement": "مجالات التحسين:",
+    "Note": "تنويه:",
+    "FeedbackSubmissionNote": "بمجرد الإرسال، سيقوم مديرك وفريق الموارد البشرية بمراجعة ملاحظاتك. شكرًا لمساعدتنا على التحسين!",
+    "Previous": "السابق",
+    "Next": "التالي",
+    "SubmitSurvey": "إرسال الاستبيان",
+    "Information": "البيانات الشخصية",
+    "Feedback": "الملاحظات",
+    "Submit": "الإرسال",
+
+    "Messages:SurveySubmittedSuccessfully": "تم إرسال استطلاعك بنجاح!",
+    "Delete:Confirmation": "هل أنت متأكد من رغبتك في حذف هذا الاستطلاع؟",
+    "Delete:SurveyDeletedSuccessfully": "تم حذف الاستطلاع بنجاح!",
+    "Delete:FailedToDeleteSurvey": "فشل حذف الاستطلاع. يرجى المحاولة مرة أخرى.",
+
+
+
+    "HideDetails": "إخفاء التفاصيل",
+    "SurveySubmission": "إرسال الاستبيان",
+    "Submitted": "تم الإرسال",
+    "ViewFullFeedback": "عرض التعليق الكامل"
+
+
+
+
+
+
+
+
   }
-}
+  }

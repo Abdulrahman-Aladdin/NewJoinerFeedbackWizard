@@ -70,11 +70,12 @@ namespace NewJoinerFeedbackWizard.Blazor.Client.Pages.Surveys
                 IsSubmitting = true;
                 await SurveyAppService.CreateSurvey(Survey);
 
-                await MessageService.Success("Survey submitted successfully!");
+                await MessageService.Success(L["Messages:SurveySubmittedSuccessfully"]);
                 NavigationManager.NavigateTo("/");
             }
             catch (Exception ex)
             {
+                //
                 await MessageService.Error($"Error submitting survey: {ex.Message}");
             }
             finally
@@ -107,9 +108,9 @@ namespace NewJoinerFeedbackWizard.Blazor.Client.Pages.Surveys
         {
             return step switch
             {
-                1 => "Information",
-                2 => "Feedback",
-                3 => "Submit",
+                1 => L["Information"],
+                2 => L["Feedback"],
+                3 => L["Submit"],
                 _ => ""
             };
         }
