@@ -36,7 +36,12 @@
                 {
                     int currentStepLocal = step;
                     <div class="d-flex flex-column align-items-center">
-                        <div class="@GetStepClass(currentStepLocal)" style="background-color: @ejada_green; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; transition: all 0.3s;">
+                        <div class="@GetStepClass(currentStepLocal)"
+                             style="background-color:@(CurrentStep == currentStepLocal ? ejada_green : "#e5e7eb") !important;
+                                color:@(CurrentStep == currentStepLocal ? "white" : "#6b7280") !important;
+                                width:48px; height:48px; border-radius:50%;
+                                display:flex; align-items:center; justify-content:center;
+                                font-weight:600; transition:all 0.3s;">
                             @if (CurrentStep > currentStepLocal)
                             {
                                 <i class="fas fa-check-circle"></i>
@@ -46,13 +51,15 @@
                                 @currentStepLocal
                             }
                         </div>
-                        <span class="@GetStepTextClass(currentStepLocal)" style="font-size: 0.75rem; margin-top: 0.5rem; font-weight: 500;">
+                        <span class="@GetStepTextClass(currentStepLocal)" style="color:@ejada_blue !important; font-size: 0.75rem; margin-top: 0.5rem; font-weight: 500;">
                             @GetStepLabel(currentStepLocal)
                         </span>
                     </div>
                     @if (step < 3)
                     {
-                        <div class="@GetProgressLineClass(currentStepLocal)" style="width: 96px; height: 4px; margin: 0 0.5rem; transition: all 0.3s;"></div>
+                        <div style="
+                            background-color:@(CurrentStep > currentStepLocal ? ejada_green : "#e5e7eb" ) !important; width:96px; height:4px; margin:0 0.5rem; border-radius:2px; transition:all 0.3s;">
+                        </div>
                     }
                 }
             </div>
