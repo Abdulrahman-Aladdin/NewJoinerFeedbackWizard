@@ -57,9 +57,6 @@ namespace NewJoinerFeedbackWizard.Services
         [Authorize(SurveyPermissions.View)]
         public async Task<List<SurveyDto>> GetMySubmittedSurveys()
         {
-            //var currentUserName = $"{CurrentUser.Name} {CurrentUser.SurName}";
-            //var surveys = await _surveyRepository.GetBySubmittedByAsync(currentUserName);
-            //return ObjectMapper.Map<List<Survey>, List<SurveyDto>>(surveys);
             var currentUserId = CurrentUser.Id;
             if (currentUserId == null)
             {

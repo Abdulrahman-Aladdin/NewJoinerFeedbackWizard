@@ -3,11 +3,14 @@
 @using NewJoinerFeedbackWizard.Dtos.User
 @using NewJoinerFeedbackWizard.Interfaces
 @using NewJoinerFeedbackWizard.Permissions
+@using Microsoft.Extensions.Localization
+@using NewJoinerFeedbackWizard.Localization
 @using Volo.Abp.AspNetCore.Components.Messages
 @inject ISurveyAppService SurveyAppService
 @inject IUserAppService UserAppService
 @inject IUiMessageService MessageService
 @inject IJSRuntime JS
+@inject IStringLocalizer<NewJoinerFeedbackWizardResource> L
 @attribute [Authorize(SurveyPermissions.ViewAll)]
 
 <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 p-4">
@@ -43,8 +46,8 @@
                     <i class="fas fa-users" style="color: white; font-size: 1.5rem;"></i>
                 </div>
                 <div>
-                    <h1 style="font-size: 1.875rem; font-weight: bold; color: #1e3a8a; margin: 0;">Manager Dashboard</h1>
-                    <p style="color: #2563eb; margin: 0;">Review team feedback and monitor satisfaction</p>
+                    <h1 style="font-size: 1.875rem; font-weight: bold; color: #1e3a8a; margin: 0;">@L["Menu:ManagerDashboard"]</h1>
+                    <p style="color: #2563eb; margin: 0;">@L["DashboardSubtitle"]</p>
                 </div>
             </div>
 
@@ -54,7 +57,7 @@
                     <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #2563eb;">
                         <div class="card-body d-flex justify-content-between align-items-center">
                             <div>
-                                <p style="color: #2563eb; font-weight: 600; font-size: 0.875rem; margin-bottom: 0.25rem;">Total Surveys</p>
+                                <p style="color: #2563eb; font-weight: 600; font-size: 0.875rem; margin-bottom: 0.25rem;">@L["TotalSurveys"]</p>
                                 <p style="font-size: 1.5rem; font-weight: bold; color: #1e3a8a; margin: 0;">@TotalCount</p>
                             </div>
                             <i class="fas fa-users" style="font-size: 2rem; color: #93c5fd;"></i>
@@ -66,7 +69,7 @@
                     <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #16a34a;">
                         <div class="card-body d-flex justify-content-between align-items-center">
                             <div>
-                                <p style="color: #15803d; font-weight: 600; font-size: 0.875rem; margin-bottom: 0.25rem;">This Month</p>
+                                <p style="color: #15803d; font-weight: 600; font-size: 0.875rem; margin-bottom: 0.25rem;">@L["StatsThisMonth"]</p>
                                 <p style="font-size: 1.5rem; font-weight: bold; color: #14532d; margin: 0;">@ThisMonthCount</p>
                             </div>
                             <i class="fas fa-calendar" style="font-size: 2rem; color: #86efac;"></i>
@@ -78,7 +81,7 @@
                     <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #9333ea;">
                         <div class="card-body d-flex justify-content-between align-items-center">
                             <div>
-                                <p style="color: #7e22ce; font-weight: 600; font-size: 0.875rem; margin-bottom: 0.25rem;">Avg Satisfaction</p>
+                                <p style="color: #7e22ce; font-weight: 600; font-size: 0.875rem; margin-bottom: 0.25rem;">@L["StatsAvgSatisfaction"] </p>
                                 <p style="font-size: 1.5rem; font-weight: bold; color: #581c87; margin: 0;">@AvgSatisfaction%</p>
                             </div>
                             <i class="fas fa-chart-line" style="font-size: 2rem; color: #d8b4fe;"></i>
@@ -90,7 +93,7 @@
                     <div class="card h-100 border-0 shadow-sm" style="border-left: 4px solid #f97316;">
                         <div class="card-body d-flex justify-content-between align-items-center">
                             <div>
-                                <p style="color: #ea580c; font-weight: 600; font-size: 0.875rem; margin-bottom: 0.25rem;">Team Members</p>
+                                <p style="color: #ea580c; font-weight: 600; font-size: 0.875rem; margin-bottom: 0.25rem;">@L["StatsTeamMembers"]</p>
                                 <p style="font-size: 1.5rem; font-weight: bold; color: #7c2d12; margin: 0;">@UniqueEmployees</p>
                             </div>
                             <i class="fas fa-user-friends" style="font-size: 2rem; color: #fdba74;"></i>
@@ -111,7 +114,7 @@
                            @bind="SearchTerm"
                            @bind:event="oninput"
                            @onkeyup="OnSearchChanged"
-                           placeholder="Search by employee or lead name..."
+                           placeholder="@L["SearchPlaceholder"]"
                            style="border: 2px solid #bfdbfe; border-left: none;" />
                 </div>
 
@@ -122,10 +125,10 @@
                         @if (IsDownloadInProgress)
                         {
                             <MudProgressCircular Class="me-2" Size=Size.Small Indeterminate="true" Color="Color.Inherit" />
-                            <span>Downloading...</span>
+                        <span>@L["StatusDownloading"]</span>
                         } else {
                             <i class="fas fa-file-excel me-2"></i>
-                            <span>Export Excel</span>
+                        <span>@L["ButtonExportExcel"]</span>
                         }
                 </button>
             </div>
@@ -136,9 +139,9 @@
         {
             <div class="text-center py-5">
                 <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-                    <span class="visually-hidden">Loading...</span>
+                    <span class="visually-hidden">@L["StatusLoading"]</span>
                 </div>
-                <p class="mt-3 text-primary">Loading surveys...</p>
+                <p class="mt-3 text-primary">@L["StatusLoadingSurveys"]</p>
             </div>
         }
         else if (FilteredSurveys == null || !FilteredSurveys.Any())
@@ -146,8 +149,8 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-body text-center py-5">
                     <i class="fas fa-users" style="font-size: 4rem; color: #bfdbfe; margin-bottom: 1rem;"></i>
-                    <h3 style="font-size: 1.25rem; font-weight: bold; color: #1e3a8a; margin-bottom: 0.5rem;">No Surveys Found</h3>
-                    <p style="color: #2563eb;">No team surveys available yet.</p>
+                    <h3 style="font-size: 1.25rem; font-weight: bold; color: #1e3a8a; margin-bottom: 0.5rem;">@L["NoSurveysTitle"]</h3>
+                    <p style="color: #2563eb;">@L["NoSurveysDescription"]</p>
                 </div>
             </div>
         }
@@ -163,18 +166,18 @@
                                     <div class="flex-grow-1">
                                         <div class="d-flex align-items-center gap-2 mb-2">
                                             <h3 style="font-size: 1.25rem; font-weight: bold; color: #1e3a8a; margin: 0;">@survey.EmployeeName</h3>
-                                            <span class="badge bg-primary">New Joiner</span>
+                                            <span class="badge bg-primary">@L["Badge:NewJoiner"]</span>
                                         </div>
                                         <div class="d-flex flex-wrap gap-3" style="font-size: 0.875rem; color: #2563eb;">
-                                            <span><i class="fas fa-user me-1 mt-2"></i> Lead: @survey.LeadName</span>
-                                            <span><i class="fas fa-calendar me-1 mt-2"></i> Joined: @survey.JoiningDate.ToShortDateString()</span>
-                                            <span><i class="fas fa-paper-plane me-1 mt-2"></i> Submitted: @survey.CreationTime.ToShortDateString()</span>
+                                            <span><i class="fas fa-user me-1"></i>@L["Label:Lead"] @survey.LeadName</span>
+                                            <span><i class="fas fa-calendar me-1"></i>@L["Label:Joined"] @survey.JoiningDate.ToShortDateString()</span>
+                                            <span><i class="fas fa-paper-plane me-1"></i>@L["Label:Submitted"] @survey.CreationTime.ToShortDateString()</span>
                                         </div>
                                     </div>
 
                                     <div class="text-end">
                                         <div class="d-flex align-items-center gap-2 mb-1">
-                                            <span style="font-size: 0.875rem; color: #2563eb; font-weight: 600;">Satisfaction:</span>
+                                            <span style="font-size: 0.875rem; color: #2563eb; font-weight: 600;">@L["Label:Satisfaction"]</span>
                                             <div class="d-flex align-items-center gap-1">
                                                 <div style="width: 96px; height: 8px; background-color: #dbeafe; border-radius: 9999px; overflow: hidden;">
                                                     <div style="height: 100%; background-color: @GetSatisfactionColor(survey.SatisfactionLevel); width: @(survey.SatisfactionLevel)%;"></div>
@@ -200,7 +203,7 @@
                                             <div class="col-md-4">
                                                 <div class="p-3" style="background-color: #dcfce7; border-radius: 0.5rem;">
                                                     <h4 style="font-size: 0.875rem; font-weight: bold; color: #1e3a8a; margin-bottom: 0.5rem;">
-                                                        <i class="fas fa-award me-2"></i>Strengths Observed
+                                                        <i class="fas fa-award me-2"></i>@L["Feedback:Strengths"]
                                                     </h4>
                                                     <p style="color: #15803d; font-size: 0.875rem; margin: 0;">@survey.StrengthsObserved</p>
                                                 </div>
@@ -209,7 +212,7 @@
                                             <div class="col-md-4">
                                                 <div class="p-3" style="background-color: #fed7aa; border-radius: 0.5rem;">
                                                     <h4 style="font-size: 0.875rem; font-weight: bold; color: #1e3a8a; margin-bottom: 0.5rem;">
-                                                        <i class="fas fa-exclamation-circle me-2"></i>Areas for Improvement
+                                                        <i class="fas fa-exclamation-circle me-2"></i>@L["Feedback:Improvement"]
                                                     </h4>
                                                     <p style="color: #7c2d12; font-size: 0.875rem; margin: 0;">@survey.MissingAreas</p>
                                                 </div>
@@ -218,7 +221,7 @@
                                             <div class="col-md-4">
                                                 <div class="p-3" style="background-color: #dbeafe; border-radius: 0.5rem;">
                                                     <h4 style="font-size: 0.875rem; font-weight: bold; color: #1e3a8a; margin-bottom: 0.5rem;">
-                                                        <i class="fas fa-lightbulb me-2"></i>Recommendations
+                                                        <i class="fas fa-lightbulb me-2"></i>@L["Feedback:Recommendations"]
                                                     </h4>
                                                     <p style="color: #1e3a8a; font-size: 0.875rem; margin: 0;">@survey.Recommendations</p>
                                                 </div>
@@ -226,14 +229,14 @@
                                         </div>
 
                                         <button class="btn btn-outline-primary w-100 mt-3" @onclick="() => ExpandedSurveyId = null">
-                                            <i class="fas fa-chevron-up me-2"></i>Hide Details
+                                            <i class="fas fa-chevron-up me-2"></i>@L["HideDetails"]
                                         </button>
                                     </div>
                                 }
                                 else
                                 {
                                     <button class="btn btn-primary w-100 mt-2" @onclick="() => ExpandedSurveyId = survey.Id">
-                                        <i class="fas fa-eye me-2"></i>View Full Feedback
+                                        <i class="fas fa-eye me-2"></i>@L["ViewFullFeedback"]
                                     </button>
                                 }
                             </div>
