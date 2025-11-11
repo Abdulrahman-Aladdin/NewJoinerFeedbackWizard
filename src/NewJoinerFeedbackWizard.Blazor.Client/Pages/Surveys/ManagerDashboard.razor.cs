@@ -115,7 +115,7 @@ namespace NewJoinerFeedbackWizard.Blazor.Client.Pages.Surveys
 
         private async Task ExportToExcel()
         {
-            if (CurrentUserInfo != null && CurrentUserInfo.Roles.Contains("Manager"))
+            if (CurrentUserInfo != null && (CurrentUserInfo.Roles.Contains("Manager")|| CurrentUserInfo.Roles.Contains("admin")))
             {
                 var userName = CurrentUserInfo.Name;
                 IsDownloadInProgress = true;
