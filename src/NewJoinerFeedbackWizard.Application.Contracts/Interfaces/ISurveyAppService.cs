@@ -19,5 +19,6 @@ namespace NewJoinerFeedbackWizard.Interfaces
         Task<List<SurveyDto>> GetSurveysByManager(string managerName);
         Task<List<SurveyDto>> GetMySubmittedSurveys();
         Task<Byte[]> ExportToExcel(string managerName);
+        Task<Byte[]> ExportAllToExcel();
     }
 }

@@ -4,10 +4,6 @@
 @using NewJoinerFeedbackWizard.Interfaces
 @using NewJoinerFeedbackWizard.Permissions
 @using Volo.Abp.AspNetCore.Components.Messages
-@inject ISurveyAppService SurveyAppService
-@inject IUserAppService UserAppService
-@inject IUiMessageService MessageService
-@inject IJSRuntime JS
 @attribute [Authorize(SurveyPermissions.ViewAll)]
 
 <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 p-4">
@@ -118,7 +114,8 @@
                 <button class="btn btn-primary d-inline-flex align-items-center" 
                         type="button" 
                         style="white-space: nowrap; padding: 0.5rem 1rem;"
-                        @onclick="ExportToExcel">
+                        @onclick="ExportToExcel"
+                        disabled="@(AllSurveys == null || !AllSurveys.Any())">
                         @if (IsDownloadInProgress)
                         {
                             <MudProgressCircular Class="me-2" Size=Size.Small Indeterminate="true" Color="Color.Inherit" />

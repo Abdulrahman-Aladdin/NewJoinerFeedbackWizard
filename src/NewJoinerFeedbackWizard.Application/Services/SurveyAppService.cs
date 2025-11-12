@@ -74,6 +74,17 @@ namespace NewJoinerFeedbackWizard.Services
         public async Task<Byte[]> ExportToExcel(string managerName)
         {
             var surveys = await _surveyRepository.GetByManagerNameAsync(managerName);
+            return MapToExcelData(surveys);
+        }
+
+        public async Task<Byte[]> ExportAllToExcel()
+        {
+            var surveys = await _surveyRepository.GetListAsync();
+            return MapToExcelData(surveys);
+        }
+
+        private static Byte[] MapToExcelData(List<Survey> surveys)
+        {
             var workbook = new XLWorkbook();
             var worksheet = workbook.Worksheets.Add("Surveys");
 
@@ -107,7 +118,8 @@ namespace NewJoinerFeedbackWizard.Services
                 if (survey.SatisfactionLevel < 40)
                 {
                     worksheet.Row(i + 2).Style.Fill.BackgroundColor = XLColor.LightPink;
-                } else if (survey.SatisfactionLevel >= 40 && survey.SatisfactionLevel <= 70)
+                }
+                else if (survey.SatisfactionLevel >= 40 && survey.SatisfactionLevel <= 70)
                 {
                     worksheet.Row(i + 2).Style.Fill.BackgroundColor = XLColor.LightYellow;
                 }

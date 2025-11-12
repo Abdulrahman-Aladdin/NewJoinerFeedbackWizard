@@ -1,20 +1,32 @@
-﻿using Microsoft.JSInterop;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using NewJoinerFeedbackWizard.Constants;
 using NewJoinerFeedbackWizard.Dtos.Survey;
 using NewJoinerFeedbackWizard.Dtos.User;
+using NewJoinerFeedbackWizard.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Volo.Abp.AspNetCore.Components.Messages;
 using static System.Net.WebRequestMethods;
 
 namespace NewJoinerFeedbackWizard.Blazor.Client.Pages.Surveys
 {
     public partial class ManagerDashboard
     {
-        private List<SurveyDto> AllSurveys { get; set; } = new();
-        private List<SurveyDto> FilteredSurveys { get; set; } = new();
+        [Inject]
+        private IJSRuntime JS { get; set; }
+        [Inject]
+        private ISurveyAppService SurveyAppService { get; set; }
+        [Inject]
+        private IUserAppService UserAppService { get; set; }
+        [Inject]
+        private IUiMessageService MessageService { get; set; }
+
+        private List<SurveyDto> AllSurveys { get; set; } = [];
+        private List<SurveyDto> FilteredSurveys { get; set; } = [];
         private string SearchTerm { get; set; } = string.Empty;
         private Guid? ExpandedSurveyId { get; set; }
         private bool IsLoading { get; set; } = true;
@@ -115,32 +127,47 @@ namespace NewJoinerFeedbackWizard.Blazor.Client.Pages.Surveys
 
         private async Task ExportToExcel()
         {
-            if (CurrentUserInfo != null && CurrentUserInfo.Roles.Contains("Manager"))
+            var excelData = await GetExcelData();
+            if (!excelData.IsNullOrEmpty())
+            {
+                IsDownloadInProgress = true;
+                var userName = CurrentUserInfo?.Name ?? "UnknownUser";
+                await JS.InvokeVoidAsync("downloadFileFromBytes", $"SurveysOf{userName}At{DateTime.Now.ToString("yyyy-MM-dd_hh:mm:ss")}.xlsx", excelData);
+            }
+            IsDownloadInProgress = false;
+        }
+
+        private async Task<Byte[]> GetExcelData()
+        {
+            if (IsInRole("Manager"))
             {
                 var userName = CurrentUserInfo.Name;
-                IsDownloadInProgress = true;
                 var excelData = await SurveyAppService.ExportToExcel(userName);
-                if (excelData != null)
-                {
-                    await JS.InvokeVoidAsync("downloadFileFromBytes", $"SurveysOf{userName}At{DateTime.Now.ToString("yyyy-MM-dd_hh:mm:ss")}.xlsx", excelData);
-                }
-                IsDownloadInProgress = false;
+                return excelData;
             }
-            
+            else if (IsInRole("admin"))
+            {
+                var excelData = await SurveyAppService.ExportAllToExcel();
+                return excelData;
+            }
+            return [];
+        }
+
+        private bool IsInRole(string role)
+        {
+            return CurrentUserInfo != null && CurrentUserInfo.Roles.Contains(role);
         }
 
         private async Task ShowDeleteConfirmation(Guid surveyId)
         {
             IsDeleteModalVisible = true;
             SurveyToDelete = AllSurveys.FirstOrDefault(s => s.Id == surveyId);
-            await JS.InvokeVoidAsync("eval", "document.body.classList.add('modal-open')");
         }
 
         private async Task CloseDeleteModal()
         {
             IsDeleteModalVisible = false;
             SurveyToDelete = null;
-            await JS.InvokeVoidAsync("eval", "document.body.classList.remove('modal-open')");
         }
 
         private async Task ConfirmDelete()
